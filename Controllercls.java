@@ -19,12 +19,25 @@ public class Controllercls {
     @RequestMapping("/completed")
     public ModelAndView com(Usercls user) {
     	ModelAndView mv=new ModelAndView();
-    	if(user.getGender().contains("female")) {
-    		String out="Ms."+user.getFirstname();
-    		mv.addObject("first",out);
-    	}else {
-    		String out="Mr."+user.getFirstname();
-    	mv.addObject("first",out);}
+    	int i=0;
+    	
+    String fin=user.getEmail();
+    boolean flag=true;
+    for(Usercls f:repo.findAll()) {
+    	if(fin.equals(f.getEmail())) {
+    		String dup="You have already registered with same mail ID";
+    		mv.addObject("dup", dup);
+    		flag=false;
+    	}
+    }
+       if(flag) {
+    	   if(user.getGender().contains("female")) {
+       		String out="Ms."+user.getFirstname();
+       		mv.addObject("first",out);
+       	}else {
+       		String out="Mr."+user.getFirstname();
+       	mv.addObject("first",out);}
+       
     	repo.save(user);
     	try {
     	String semail=user.getEmail();
@@ -33,7 +46,8 @@ public class Controllercls {
     	mailsen.sender(semail, body, sub);}
     	catch(Exception e) {
     		System.out.println(e);
-    	}
+    	}}
     	return mv;
     }
+    
 }
